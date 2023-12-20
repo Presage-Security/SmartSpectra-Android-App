@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Presage Private</string>
+    <string name="api_key_input_hint">Your api_key for Smartspectra SDK:</string>
+</resources>
