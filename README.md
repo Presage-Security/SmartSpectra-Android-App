@@ -1,5 +1,8 @@
 # SmartSpectra SDK. Heart and Respiration rate measurment demo.
 
+## Sign up for an API key
+https://physiology.presagetech.com/
+
 ## Add it to your application
 
 ### Sdk dependency
