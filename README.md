@@ -9,7 +9,7 @@ https://physiology.presagetech.com/
 
 Add sdk dependency to your build.gradle.kts file
 ```kotlin
-implementation("com.presagetech:smartspectra:1.0.0-SNAPSHOT")
+implementation("com.presagetech:smartspectra:1.0.1-SNAPSHOT")
 ```
 
 While the sdk library is in development process it may be necessary to add `maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")`
@@ -27,7 +27,7 @@ dependencyResolutionManagement {
 
 ### Code changes
 
-Then add `com.presagetech.smartspectra.core.button.SmartSpectraButton` into your activity.
+Then add `com.presagetech.smartspectra.SmartSpectraButton` into your activity.
 
 SmartSpectraButton has two methods:
 * `.setApiKey(String)` - which expects you to provide your api key before using the button,

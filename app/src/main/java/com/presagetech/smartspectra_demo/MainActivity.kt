@@ -2,11 +2,10 @@ package com.presagetech.smartspectra_demo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.Toast
-import com.presagetech.smartspectra.core.button.SmartSpectraButton
-import com.presagetech.smartspectra.core.result.ScreeningResult
-import com.presagetech.smartspectra.core.result.SmartSpectraResultView
+import com.presagetech.smartspectra.ScreeningResult
+import com.presagetech.smartspectra.SmartSpectraButton
+import com.presagetech.smartspectra.SmartSpectraResultView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var resultView: SmartSpectraResultView
@@ -19,7 +18,8 @@ class MainActivity : AppCompatActivity() {
         val smartSpectraButton: SmartSpectraButton = findViewById(R.id.btn)
         smartSpectraButton.setResultListener(this::onSmartSpectraResult)
 
-        smartSpectraButton.setApiKey("YOUR_API_KEY_HERE")
+        // Get you api key from https://physiology.presagetech.com/
+//        smartSpectraButton.setApiKey("YOUR_API_KEY_HERE")
     }
 
     private fun onSmartSpectraResult(result: ScreeningResult) {
