@@ -140,6 +140,35 @@ class MainActivity : AppCompatActivity(), SmartSpectraResultView.SmartSpectraRes
   }
 }
 ```
+The following are descirptions of the metrics:
+
+hr: pulse rate (time, value, and confidence)
+
+rr: breath rate (time, value, and confidence)
+
+hr_trace: rppg (time, value)
+
+rr_trace: breathing trace (time, value)
+
+hr_spec: pulse rate spectrogram (time, value, freq)
+
+rr_spec: breath rate spectrogram (time, value, freq)
+
+hrv: pulse rate variability (RMSSD) (time, value)
+
+phasic: an estimate of relative blood pressure (time, value)
+
+rrl: respiratory line length (time, value)
+
+apnea: boolean True if subject not breathing was detected
+
+ie: exhalation/inhalation, sampled once for each breath cycle (time, value)
+
+amplitude: amplitude of breathing waveform
+
+baseline: baseline of breathing waveform
+
+
 - `strictPulseRate` is a single integer value representing the Strict Pulse Rate in beats per min which is the average of only high confidence pulse rate values
 - `strictBreathingRate` is a single integer value representing the Strict Breathing Rate in beats per min which is the average of only high confidence pulse rate values
 
