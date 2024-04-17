@@ -17,7 +17,7 @@ This app contained in this repo is an example of pulling and using the SmartSpec
 
 ## Prerequisites
 Before you start, ensure your development environment includes:
-- Android Studio 4.0 or higher
+- Android Studio Giraffe or later
 - Minimum SDK level 21
 
 ## Installation
