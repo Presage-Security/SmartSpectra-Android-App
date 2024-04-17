@@ -184,5 +184,10 @@ You can obtain an API key from PresageTech's developer portal (https://physiolog
 
 ## Troubleshooting
 For additional support, contact support@presagetech.com or submit a github issue (https://github.com/Presage-Security/SmartSpectra-Android-App/issues)
+### Known Bugs: 
+- Will sometimes crash on initial launch after accepting camera permissions
 
-Please refer to [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt) for usage example.
+### To dos:
+- add in user acceptance prompt and tutorial
+- consolidate onRecievedFunctions
+
