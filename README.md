@@ -1,6 +1,6 @@
 # SmartSpectra SDK Integration Guide
 
-This README provides instructions for integrating and utilizing the SmartSpectra SDK in your Android application to measure physiology metrics from video.
+This provides instructions for integrating and utilizing the SmartSpectra SDK in your Android application to measure physiology metrics from a 30 second measurement using the mobile device's camera.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -10,6 +10,7 @@ This README provides instructions for integrating and utilizing the SmartSpectra
 - [API Key](#api-key)
 - [Handling Results](#handling-results)
 - [Troubleshooting](#troubleshooting)
+
 
 ## Prerequisites
 Before you start, ensure your development environment includes:
@@ -51,6 +52,8 @@ smartSpectraButton.setApiKey("YOUR_API_KEY")
 ```
 
 ## Usage
+### Example Code
+Please refer to [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt) for example usage and plotting of a pulse pleth waveform. 
 ### Implementing the Callback Interface
 Implement `SmartSpectraResultView.SmartSpectraResultsCallback` in your MainActivity:
 ```kotlin
@@ -68,6 +71,78 @@ class MainActivity : AppCompatActivity(), SmartSpectraResultView.SmartSpectraRes
     }
 }
 ```
+### Data Format
+- `jsonMetrics` is a json containing the metrics available according to your api key. For com.presagetech:smartspectra:1.0.2 the current json structure is as follows:
+ ```json
+{
+  "error": "",
+  "version": "3.10.1",
+  "pulse": {
+     "hr":{
+         "10":{
+              "value": 58.9,
+              "confidence": 0.95,
+         },
+         "11":{
+              "value": 58.2,
+              "confidence": 0.94,
+         },
+         "12":{
+              "value": 58.1,
+              "confidence": 0.91,
+         },
+      },
+     "hr_trace":{
+         "0":{ "value": 0.5},
+         "0.033":{ "value": 0.56},
+         "0.066":{ "value": 0.59}
+      },
+     "hr_spec":{
+         "10":{ "value": [], "freq":[]},
+         "11":{ "value": [], "freq":[]},
+         "12":{ "value": [], "freq":[]}
+      },
+     "hrv":{},
+  },
+  "breath": {
+     "rr":{
+         "15":{
+              "value": 18.9,
+              "confidence": 0.95,
+         },
+         "16":{
+              "value": 18.2,
+              "confidence": 0.94,
+         },
+         "17":{
+              "value": 18.1,
+              "confidence": 0.91,
+         },
+      },
+     "rr_trace":{
+         "0":{ "value": 0.5},
+         "0.033":{ "value": 0.56},
+         "0.066":{ "value": 0.59}
+      },
+     "rr_spec":{
+         "15":{ "value": [], "freq":[]},
+         "16":{ "value": [], "freq":[]},
+         "17":{ "value": [], "freq":[]}
+      },
+     "rrl":{"0":{ "value": 0.5}},
+     "apnea":{"0":{ "value": false}},
+     "ie":{"0":{ "value": 1.5}},
+     "amplitude":{"0":{ "value": 0.5}},
+     "baseline":{"0":{ "value": 0.5}}
+  },
+  "pressure": {
+     "phasic":{"0":{ "value": 0.5}},
+  }
+}
+```
+- `strictPulseRate` is a single integer value representing the Strict Pulse Rate in beats per min which is the average of only high confidence pulse rate values
+- `strictBreathingRate` is a single integer value representing the Strict Breathing Rate in beats per min which is the average of only high confidence pulse rate values
+
 ### Setting Up Listeners
 Connect your components to the callbacks:
 ```kotlin
