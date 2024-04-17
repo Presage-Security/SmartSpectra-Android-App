@@ -1,6 +1,8 @@
-# SmartSpectra SDK Integration Guide
+# Maven SmartSpectra SDK Integration Guide
 
-This provides instructions for integrating and utilizing the SmartSpectra SDK in your Android application to measure physiology metrics from a 30 second measurement using the mobile device's camera.
+This provides instructions for integrating and utilizing the Presage SmartSpectra SDK publicly hosted on Maven in your Android application to measure physiology metrics from a 30 second measurement using the mobile device's camera.
+
+This app contained in this repo is an example of pulling and using the SmartSpectra SDK from Maven. It should run out of the box as long as your API key is provided.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
@@ -10,6 +12,7 @@ This provides instructions for integrating and utilizing the SmartSpectra SDK in
 - [API Key](#api-key)
 - [Handling Results](#handling-results)
 - [Troubleshooting](#troubleshooting)
+- [Known Bugs](#known-bugs)
 
 
 ## Prerequisites
@@ -184,8 +187,9 @@ You can obtain an API key from PresageTech's developer portal (https://physiolog
 
 ## Troubleshooting
 For additional support, contact support@presagetech.com or submit a github issue (https://github.com/Presage-Security/SmartSpectra-Android-App/issues)
-### Known Bugs: 
+## Known Bugs: 
 - Will sometimes crash on initial launch after accepting camera permissions
+- HRV is not returning 
 
 ### To dos:
 - add in user acceptance prompt and tutorial
