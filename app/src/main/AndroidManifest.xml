@@ -19,6 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- you can define api_key here, it'll be automatically picked up by smartspectra SDK
+                <meta-data
+                    android:name="com.presagetech.smartspectra.api_key"
+                    android:value="API_TOKEN_HERE" />
+         -->
     </application>
 
 </manifest>
