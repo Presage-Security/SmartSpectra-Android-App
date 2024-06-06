@@ -26,7 +26,7 @@ platform :android do
       build_type: 'release',
       print_command: true,
       properties: {
-    	"android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+    	"android.injected.signing.store.file" => "release.keystore",
    	"android.injected.signing.store.password" => ENV["RELEASE_STORE_PASSWORD"],
     	"android.injected.signing.key.alias" => ENV["RELEASE_KEY_ALIAS"],
     	"android.injected.signing.key.password" => ENV["RELEASE_KEY_PASSWORD"],
