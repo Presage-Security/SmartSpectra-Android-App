@@ -11,6 +11,7 @@ android {
         applicationId = "com.presagetech.smartspectra_example"
         minSdk = 24
         targetSdk = 34
+	versionCode = 4
     }
 
     buildTypes {
