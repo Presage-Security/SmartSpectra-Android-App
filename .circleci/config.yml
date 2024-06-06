@@ -15,6 +15,8 @@ jobs:
       - run: cat app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt | sed "s|demo_api_key|$PHYSIOLOGY_API_KEY|g" > tmp
       - run: mv tmp app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt
       - run: sudo gem install fastlane
+      - run: pwd
+      - run: ls -la
       - run: fastlane upload_to_closed_test_internal
 
 workflows:
