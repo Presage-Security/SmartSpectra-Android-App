@@ -1,23 +1,17 @@
 version: 2.1
-orbs:
-  aws-cli: circleci/aws-cli@4.0
 
 jobs:
   build:
     docker:
       - image: cimg/android:2024.04.1
     steps:
-      - aws-cli/setup:
-          profile_name: default
-          role_arn: "arn:aws:iam::994342159206:role/circleci"
       - checkout
       - run: echo $KEYSTORE_RELEASE_BASE64 | base64 -d | tee release.keystore > /dev/null
-      - run: cat app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt | sed "s|demo_api_key|$PHYSIOLOGY_API_KEY|g" > tmp
+      - run: cat app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt | sed "s|YOUR_API_KEY_HERE|$PHYSIOLOGY_API_KEY|g" > tmp
       - run: mv tmp app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt
+      - run: cat app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt
       - run: echo $GOOGLE_PLAY_KEY > google_play_key.json
       - run: sudo gem install fastlane
-      - run: pwd
-      - run: ls -la
       - run: fastlane upload_to_closed_test_internal
 
 workflows:

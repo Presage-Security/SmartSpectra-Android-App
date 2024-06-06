@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), SmartSpectraResultView.SmartSpectraRes
         tokenEditText.setOnEditorActionListener { _, _, _ ->
             val token = tokenEditText.text.toString().trim()
             saveToken(token)
-            smartSpectraButton.setApiKey(token)
+            smartSpectraButton.setApiKey("YOUR_API_KEY_HERE")
             true
         }
         val storedToken = loadToken()
