@@ -26,7 +26,7 @@ platform :android do
       build_type: 'release',
       print_command: true,
       properties: {
-        "versionCode" => new_build_number,
+        "android.injected.version.code" => new_build_number,
     	"android.injected.signing.store.file" => "/home/circleci/project/release.keystore",
    	"android.injected.signing.store.password" => ENV["RELEASE_STORE_PASSWORD"],
     	"android.injected.signing.key.alias" => ENV["RELEASE_KEY_ALIAS"],
