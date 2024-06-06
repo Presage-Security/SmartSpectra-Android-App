@@ -1,0 +1,23 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/android:2024.04.1
+    steps:
+      - checkout
+      - run: echo $KEYSTORE_RELEASE_BASE64 | base64 -d | tee release.keystore > /dev/null
+      - run: cat app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt | sed "s|YOUR_API_KEY_HERE|$PHYSIOLOGY_API_KEY|g" > tmp
+      - run: mv tmp app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt
+      - run: cat app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt
+      - run: echo $GOOGLE_PLAY_KEY > google_play_key.json
+      - run: sudo gem install fastlane
+      - run: fastlane upload_to_closed_test_internal
+
+workflows:
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: cicd

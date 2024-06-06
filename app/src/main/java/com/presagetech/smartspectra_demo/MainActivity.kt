@@ -1,4 +1,4 @@
-package com.presagetech.smartspectra_demo
+package com.presagetech.smartspectra_example
 
 
 import android.graphics.Color
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), SmartSpectraResultView.SmartSpectraRes
             true
         }
         val storedToken = loadToken()
-        smartSpectraButton.setApiKey(storedToken)
+        smartSpectraButton.setApiKey("YOUR_API_KEY_HERE")
         tokenEditText.setText(storedToken)
 
         // In case of unsupported devices
