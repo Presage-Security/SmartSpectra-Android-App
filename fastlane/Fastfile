@@ -20,13 +20,13 @@ platform :android do
     lane :upload_to_closed_test_internal do
     gradle(task: 'clean')
     previous_build_number = google_play_track_version_codes(track: "internal")[0]
-    current_build_number = previous_build_number + 1
-    increment_version_code(app_project_dir: "./app", version_code: current_build_number.to_i)
+    new_build_number = previous_build_number + 1
     gradle(
       task: 'bundle',
       build_type: 'release',
       print_command: true,
       properties: {
+        "versionCode" => new_build_number,
     	"android.injected.signing.store.file" => "/home/circleci/project/release.keystore",
    	"android.injected.signing.store.password" => ENV["RELEASE_STORE_PASSWORD"],
     	"android.injected.signing.key.alias" => ENV["RELEASE_KEY_ALIAS"],
