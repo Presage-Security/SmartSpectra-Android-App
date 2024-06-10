@@ -25,7 +25,7 @@ To integrate the SmartSpectra SDK into your Android project, add the following d
 
 ```gradle
 dependencies {
-    implementation 'com.presagetech:smartspectra:1.0.3'
+    implementation 'com.presagetech:smartspectra:1.0.5'
 }
 ```
 While the sdk library is in development process it may be necessary to add `maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")`
@@ -45,8 +45,17 @@ dependencyResolutionManagement {
 ### Initialize Components
 In your activity or fragment, initialize the SmartSpectraButton and SmartSpectraResultView:
 ```kotlin
-val smartSpectraButton: SmartSpectraButton = findViewById(R.id.btn)
-val resultView: SmartSpectraResultView = findViewById(R.id.result_view)
+private lateinit var smartSpectraButton: SmartSpectraButton
+private lateinit var resultView: SmartSpectraResultView
+
+override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // Setting up SmartSpectra Results/Views
+        smartSpectraButton = findViewById(R.id.btn)
+        resultView = findViewById(R.id.result_view)
+        smartSpectraButton.setResultListener(resultListener)
 ```
 ### Set API Key
 You need a valid API key to authenticate your requests:
@@ -56,26 +65,25 @@ smartSpectraButton.setApiKey("YOUR_API_KEY")
 
 ## Usage
 ### Example Code
-Please refer to [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt) for example usage and plotting of a pulse pleth waveform. 
+Please refer to [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt) for example usage and plotting of a pulse and breathing pleth waveform. 
 ### Implementing the Callback Interface
-Implement `SmartSpectraResultView.SmartSpectraResultsCallback` in your MainActivity:
+Implement `SmartSpectraResultListener` in your MainActivity:
 ```kotlin
-class MainActivity : AppCompatActivity(), SmartSpectraResultView.SmartSpectraResultsCallback {
-    override fun onMetricsJsonReceive(jsonMetrics: JSONObject) {
-        // Handle JSON metrics here
+private val resultListener: SmartSpectraResultListener = SmartSpectraResultListener { result ->
+        resultView.onResult(result) // pass the result to the view or handle it as needed
+        // example usage of HR and RR pleth data (if present) to plot the pleth chart
+        if (result is ScreeningResult.Success && !result.hrTrace.isNullOrEmpty()) {
+            chartHr.visibility = View.VISIBLE
+            dataPlotting(chartHr, result.hrTrace!!.map { Entry(it.time, it.value) })
+        }
+        if (result is ScreeningResult.Success && !result.rrTrace.isNullOrEmpty()) {
+            chartRr.visibility = View.VISIBLE
+            dataPlotting(chartRr, result.rrTrace!!.map { Entry(it.time, it.value) })
+        }
     }
-
-    override fun onStrictPuleRateReceived(strictPulseRate: Int) {
-        // Handle strict pulse rate
-    }
-
-    override fun onStrictBreathingRateReceived(strictBreathingRate: Int) {
-        // Handle strict breathing rate
-    }
-}
 ```
 ### Data Format
-- `jsonMetrics` is a json containing the metrics available according to your api key. For com.presagetech:smartspectra:1.0.2 the current json structure is as follows:
+- `jsonMetrics` (coming soon to 1.0.5) is a json containing the metrics available according to your api key. For com.presagetech:smartspectra:1.0.2 the current json structure is as follows:
  ```json
 {
   "error": "",
@@ -172,15 +180,11 @@ amplitude: amplitude of breathing waveform
 baseline: baseline of breathing waveform
 
 
-- `strictPulseRate` is a single integer value representing the Strict Pulse Rate in beats per min which is the average of only high confidence pulse rate values
-- `strictBreathingRate` is a single integer value representing the Strict Breathing Rate in beats per min which is the average of only high confidence pulse rate values
+- `hrAverage` is a single integer value representing the Strict Pulse Rate in beats per min which is the average of only high confidence pulse rate values
+- `rrAverage` is a single integer value representing the Strict Breathing Rate in beats per min which is the average of only high confidence pulse rate values
+- `hrTrace` is a list of time and values for the pulse pleth
+- `rrTrace` is a list of time and values for the breathing movement pleth
 
-### Setting Up Listeners
-Connect your components to the callbacks:
-```kotlin
-resultView.callback = this
-smartSpectraButton.setResultListener(resultView)
-```
 
 ## API Key
 You can obtain an API key from PresageTech's developer portal (https://physiology.presagetech.com/)

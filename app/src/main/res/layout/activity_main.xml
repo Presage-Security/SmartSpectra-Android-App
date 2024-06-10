@@ -4,27 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:gravity="top"
     android:orientation="vertical"
     tools:context=".MainActivity">
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/api_key_input_hint"
-        android:maxWidth="400dp"
-        app:hintEnabled="true"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_api_token"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:padding="8dp"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <com.presagetech.smartspectra.SmartSpectraButton
         android:id="@+id/btn"
@@ -36,11 +18,19 @@
         android:id="@+id/result_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+        android:id="@+id/chart_hr"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:visibility="gone"/>
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart_rr"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"/>
 
 </LinearLayout>

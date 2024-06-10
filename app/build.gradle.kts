@@ -38,5 +38,5 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0") // for plotting
     implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("com.presagetech:smartspectra:1.0.3-SNAPSHOT")
+    implementation("com.presagetech:smartspectra:1.0.5-SNAPSHOT")
 }
