@@ -20,14 +20,14 @@
         android:layout_height="wrap_content" />
 
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart_hr"
+        android:id="@+id/chart_pulsePleth"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginTop="20dp"
         android:visibility="gone"/>
 
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart_rr"
+        android:id="@+id/chart_breathingPleth"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_marginTop="20dp"

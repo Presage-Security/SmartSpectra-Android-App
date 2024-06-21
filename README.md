@@ -25,7 +25,7 @@ To integrate the SmartSpectra SDK into your Android project, add the following d
 
 ```gradle
 dependencies {
-    implementation 'com.presagetech:smartspectra:1.0.5'
+    implementation 'com.presagetech:smartspectra:1.0.6'
 }
 ```
 While the sdk library is in development process it may be necessary to add `maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")`
@@ -43,18 +43,22 @@ dependencyResolutionManagement {
 
 ## Setup
 ### Initialize Components
-In your activity or fragment, initialize the SmartSpectraButton and SmartSpectraResultView:
+In your activity or fragment, initialize the SmartSpectraButton, SmartSpectraResultListener, SmartSpectraResultView, 
+and ScreeningResult:
 ```kotlin
-private lateinit var smartSpectraButton: SmartSpectraButton
-private lateinit var resultView: SmartSpectraResultView
+import com.presagetech.smartspectra.SmartSpectraButton
+import com.presagetech.smartspectra.SmartSpectraResultListener
+import com.presagetech.smartspectra.SmartSpectraResultView
+import com.presagetech.smartspectra.ScreeningResult
 
-override fun onCreate(savedInstanceState: Bundle?) {
+ override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Setting up SmartSpectra Results/Views
         smartSpectraButton = findViewById(R.id.btn)
         resultView = findViewById(R.id.result_view)
+        
         smartSpectraButton.setResultListener(resultListener)
 ```
 ### Set API Key
@@ -62,6 +66,7 @@ You need a valid API key to authenticate your requests:
 ```kotlin
 smartSpectraButton.setApiKey("YOUR_API_KEY")
 ```
+You can obtain an API key from PresageTech's developer portal (https://physiology.presagetech.com/)
 
 ## Usage
 ### Example Code
@@ -71,119 +76,37 @@ Implement `SmartSpectraResultListener` in your MainActivity:
 ```kotlin
 private val resultListener: SmartSpectraResultListener = SmartSpectraResultListener { result ->
         resultView.onResult(result) // pass the result to the view or handle it as needed
-        // example usage of HR and RR pleth data (if present) to plot the pleth chart
-        if (result is ScreeningResult.Success && !result.hrTrace.isNullOrEmpty()) {
-            chartHr.visibility = View.VISIBLE
-            dataPlotting(chartHr, result.hrTrace!!.map { Entry(it.time, it.value) })
+        // example usage of pulse and breathing pleth data (if present) to plot the pleth charts
+        if (result is ScreeningResult.Success && !result.pulsePleth.isNullOrEmpty()) {
+            chartPulsePleth.visibility = View.VISIBLE
+            dataPlotting(chartPulsePleth, result.pulsePleth!!.map { Entry(it.time, it.value) })
         }
-        if (result is ScreeningResult.Success && !result.rrTrace.isNullOrEmpty()) {
-            chartRr.visibility = View.VISIBLE
-            dataPlotting(chartRr, result.rrTrace!!.map { Entry(it.time, it.value) })
+        if (result is ScreeningResult.Success && !result.breathingPleth.isNullOrEmpty()) {
+            chartBreathingPleth.visibility = View.VISIBLE
+            dataPlotting(chartBreathingPleth, result.breathingPleth!!.map { Entry(it.time, it.value) })
         }
     }
 ```
 ### Data Format
-- `jsonMetrics` (coming soon to 1.0.5) is a json containing the metrics available according to your api key. For com.presagetech:smartspectra:1.0.2 the current json structure is as follows:
- ```json
-{
-  "error": "",
-  "version": "3.10.1",
-  "pulse": {
-     "hr":{
-         "10":{
-              "value": 58.9,
-              "confidence": 0.95,
-         },
-         "11":{
-              "value": 58.2,
-              "confidence": 0.94,
-         },
-         "12":{
-              "value": 58.1,
-              "confidence": 0.91,
-         },
-      },
-     "hr_trace":{
-         "0":{ "value": 0.5},
-         "0.033":{ "value": 0.56},
-         "0.066":{ "value": 0.59}
-      },
-     "hr_spec":{
-         "10":{ "value": [], "freq":[]},
-         "11":{ "value": [], "freq":[]},
-         "12":{ "value": [], "freq":[]}
-      },
-     "hrv":{},
-  },
-  "breath": {
-     "rr":{
-         "15":{
-              "value": 18.9,
-              "confidence": 0.95,
-         },
-         "16":{
-              "value": 18.2,
-              "confidence": 0.94,
-         },
-         "17":{
-              "value": 18.1,
-              "confidence": 0.91,
-         },
-      },
-     "rr_trace":{
-         "0":{ "value": 0.5},
-         "0.033":{ "value": 0.56},
-         "0.066":{ "value": 0.59}
-      },
-     "rr_spec":{
-         "15":{ "value": [], "freq":[]},
-         "16":{ "value": [], "freq":[]},
-         "17":{ "value": [], "freq":[]}
-      },
-     "rrl":{"0":{ "value": 0.5}},
-     "apnea":{"0":{ "value": false}},
-     "ie":{"0":{ "value": 1.5}},
-     "amplitude":{"0":{ "value": 0.5}},
-     "baseline":{"0":{ "value": 0.5}}
-  },
-  "pressure": {
-     "phasic":{"0":{ "value": 0.5}},
-  }
-}
-```
-The following are descirptions of the metrics:
+The resultsListener contains the following objects:
 
-hr: pulse rate (time, value, and confidence)
+-  `result.strictPulseRate` - (Double) the strict pulse rate (high confidence average over 30 seconds)
+-  `result.strictBreathingRate` - (Double) the strict breathing rate (high confidence average over 30 seconds)
+-  `result.pulseValues` - ArrayList<>(time (double), value (double)) Pulse rates 
+- `result.pulseConfidence` - ArrayList<>(time (double), value (double)) Pulse rate confidences
+- `result.pulsePleth` - ArrayList<>(time (double), value (double)) Pulse waveform or pleth 
+- `result.breathingValues` - ArrayList<>(time (double), value (double)) Breathing rates
+- `result.breathingPleth` - ArrayList<>(time (double), value (double)) Breathing movement waveform or pleth
+- `result.breathingAmplitude` - ArrayList<>(time (double), value (double)) Breathing rate confidences
+- `result.apnea` - ArrayList<>(time (double), value (bool)) Apnea detection
+- `result.breathingBaseline` - ArrayList<>(time (double), value (double)) Breathing baseline
+- `result.phasic` - ArrayList<>(time (double), value (double)) Phasic (ie changes in relative blood pressure)
+- `result.rrl` - ArrayList<>(time (double), value (double)) Respiratory line length 
+- `result.ie` -  ArrayList<>(time (double), value (double)) The inhale exhale ratio 
+- `result.upload_date` - ZonedDateTime - upload date time
+- `result.version` - String - the version of API used
+- 
 
-rr: breath rate (time, value, and confidence)
-
-hr_trace: rppg (time, value)
-
-rr_trace: breathing trace (time, value)
-
-hr_spec: pulse rate spectrogram (time, value, freq)
-
-rr_spec: breath rate spectrogram (time, value, freq)
-
-hrv: pulse rate variability (RMSSD) (time, value)
-
-phasic: an estimate of relative blood pressure (time, value)
-
-rrl: respiratory line length (time, value)
-
-apnea: boolean True if subject not breathing was detected
-
-ie: exhalation/inhalation, sampled once for each breath cycle (time, value)
-
-amplitude: amplitude of breathing waveform
-
-baseline: baseline of breathing waveform
-
-
-- `hrAverage` is a single integer value representing the Strict Pulse Rate in beats per min which is the average of only high confidence pulse rate values
-- `rrAverage` is a single integer value representing the Strict Breathing Rate in beats per min which is the average of only high confidence pulse rate values
-- `hrTrace` is a list of time and values for the pulse pleth
-- `rrTrace` is a list of time and values for the breathing movement pleth
 
 
 ## API Key
@@ -197,5 +120,4 @@ For additional support, contact support@presagetech.com or submit a github issue
 
 ### To dos:
 - add in user acceptance prompt and tutorial
-- consolidate onRecievedFunctions
 
