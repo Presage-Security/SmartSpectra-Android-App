@@ -26,9 +26,8 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
     private lateinit var smartSpectraButton: SmartSpectraButton
     private lateinit var resultView: SmartSpectraResultView
-    private lateinit var chartHr: LineChart
-    private lateinit var chartRr: LineChart
-
+    private lateinit var chartPulsePleth: LineChart
+    private lateinit var chartBreathingPleth: LineChart
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,8 +35,8 @@ class MainActivity : AppCompatActivity() {
         // Setting up SmartSpectra Results/Views
         smartSpectraButton = findViewById(R.id.btn)
         resultView = findViewById(R.id.result_view)
-        chartHr = findViewById(R.id.chart_hr)
-        chartRr = findViewById(R.id.chart_rr)
+        chartPulsePleth = findViewById(R.id.chart_pulsePleth)
+        chartBreathingPleth = findViewById(R.id.chart_breathingPleth)
 
         smartSpectraButton.setResultListener(resultListener)
 
@@ -55,14 +54,14 @@ class MainActivity : AppCompatActivity() {
 
     private val resultListener: SmartSpectraResultListener = SmartSpectraResultListener { result ->
         resultView.onResult(result) // pass the result to the view or handle it as needed
-        // example usage of HR and RR pleth data (if present) to plot the pleth charts
-        if (result is ScreeningResult.Success && !result.hrTrace.isNullOrEmpty()) {
-            chartHr.visibility = View.VISIBLE
-            dataPlotting(chartHr, result.hrTrace!!.map { Entry(it.time, it.value) })
+        // example usage of pulse and breathing pleth data (if present) to plot the pleth charts
+        if (result is ScreeningResult.Success && !result.pulsePleth.isNullOrEmpty()) {
+            chartPulsePleth.visibility = View.VISIBLE
+            dataPlotting(chartPulsePleth, result.pulsePleth!!.map { Entry(it.time, it.value) })
         }
-        if (result is ScreeningResult.Success && !result.rrTrace.isNullOrEmpty()) {
-            chartRr.visibility = View.VISIBLE
-            dataPlotting(chartRr, result.rrTrace!!.map { Entry(it.time, it.value) })
+        if (result is ScreeningResult.Success && !result.breathingPleth.isNullOrEmpty()) {
+            chartBreathingPleth.visibility = View.VISIBLE
+            dataPlotting(chartBreathingPleth, result.breathingPleth!!.map { Entry(it.time, it.value) })
         }
     }
 
