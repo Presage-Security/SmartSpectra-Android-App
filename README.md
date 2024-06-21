@@ -10,7 +10,6 @@ This app contained in this repo is an example of pulling and using the SmartSpec
 - [Setup](#setup)
 - [Usage](#usage)
 - [API Key](#api-key)
-- [Handling Results](#handling-results)
 - [Troubleshooting](#troubleshooting)
 - [Known Bugs](#known-bugs)
 
