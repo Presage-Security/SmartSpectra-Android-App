@@ -4,14 +4,15 @@ plugins {
 }
 
 android {
-    namespace = "com.presagetech.smartspectra_example"
+    namespace = "com.presagetech.smartspectra_demo"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.presagetech.smartspectra_example"
-        minSdk = 24
+        applicationId = "com.presagetech.smartspectra_demo"
+        minSdk = 26
         targetSdk = 34
-	versionCode = 4
+        versionCode = 4
+        versionName = "4.0"
     }
 
     buildTypes {
@@ -33,10 +34,14 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0") // for plotting
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
     implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("com.presagetech:smartspectra:1.0.8-SNAPSHOT")
+
+    implementation("com.presagetech:smartspectra:1.0.9-SNAPSHOT")
+
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
