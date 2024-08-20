@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.presagetech.smartspectra_demo"
+    namespace = "com.presagetech.smartspectra_example"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.presagetech.smartspectra_demo"
+        applicationId = "com.presagetech.smartspectra_example"
         minSdk = 26
         targetSdk = 34
         versionCode = 4
@@ -41,7 +41,7 @@ dependencies {
 
     implementation("com.jakewharton.timber:timber:5.0.1")
 
-    implementation("com.presagetech:smartspectra:1.0.9-SNAPSHOT")
+    implementation("com.presagetech:smartspectra:1.0.10-SNAPSHOT")
 
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

@@ -24,7 +24,7 @@ To integrate the SmartSpectra SDK into your Android project, add the following d
 
 ```gradle
 dependencies {
-    implementation 'com.presagetech:smartspectra:1.0.9'
+    implementation 'com.presagetech:smartspectra:1.0.10'
 }
 ```
 While the sdk library is in development process it may be necessary to add `maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")`
@@ -83,7 +83,7 @@ You can obtain an API key from PresageTech's developer portal (https://physiolog
 
 ### Example Code
 
-Implement `SmartSpectraResultListener` in your MainActivity. Please refer to [MainActivity.kt](src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt) for example usage and plotting of a pulse and breathing pleth waveform. 
+Implement `SmartSpectraResultListener` in your MainActivity. Please refer to [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_example/MainActivity.kt) for example usage and plotting of a pulse and breathing pleth waveform. 
 
 ```kotlin
 private val resultListener: SmartSpectraResultListener = SmartSpectraResultListener { result ->
@@ -91,7 +91,7 @@ private val resultListener: SmartSpectraResultListener = SmartSpectraResultListe
         resultView.onResult(result) // pass the result to the view or handle it as needed
 
         // example usage of pulse and breathing pleth data (if present) to plot the pleth charts
-        // see [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_demo/MainActivity.kt)
+        // see [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_example/MainActivity.kt)
         if (result is ScreeningResult.Success) {
             result.pulsePleth?.let {
                 addChart( it.map { Entry(it.time, it.value) }, "Pulse Pleth", false)
