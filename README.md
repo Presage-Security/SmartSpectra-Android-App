@@ -24,7 +24,7 @@ To integrate the SmartSpectra SDK into your Android project, add the following d
 
 ```gradle
 dependencies {
-    implementation 'com.presagetech:smartspectra:1.0.10'
+    implementation 'com.presagetech:smartspectra:1.0.13'
 }
 ```
 While the sdk library is in development process it may be necessary to add `maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")`
@@ -44,24 +44,18 @@ dependencyResolutionManagement {
 ## Setup
 
 ### Initialize Components
-In your activity or fragment, initialize the `SmartSpectraButton`, `SmartSpectraResultListener`, `SmartSpectraResultView`, 
-and `ScreeningResult`:
+In your activity or fragment, initialize the `SmartSpectraView` (The view consists of checkup button and result view):
 
 ```kotlin
-import com.presagetech.smartspectra.SmartSpectraButton
-import com.presagetech.smartspectra.SmartSpectraResultListener
-import com.presagetech.smartspectra.SmartSpectraResultView
-import com.presagetech.smartspectra.ScreeningResult
+import com.presagetech.smartspectra.SmartSpectraView
 
  override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Setting up SmartSpectra Results/Views
-        smartSpectraButton = findViewById(R.id.btn)
-        resultView = findViewById(R.id.result_view)
-        
-        smartSpectraButton.setResultListener(resultListener)
+        smartSpectraView = findViewById(R.id.smart_spectra_view)
+
  }
 ```
 ### Set API Key and Configure SDK Paramters
@@ -69,13 +63,16 @@ import com.presagetech.smartspectra.ScreeningResult
 You need a valid API key to authenticate your requests:
 
 ```kotlin
-smartSpectraButton.setApiKey("YOUR_API_KEY")
+//Required configuration
+// Your api token from https://physiology.presagetech.com/
+smartSpectraView.setApiKey("YOUR_API_KEY")
 
+// Optional configurations
 // Set measurement duration (valid range for spot time is between 20.0 and 120.0)
 // Defaults to 30 if not specified otherwise
-smartSpectraButton.setSpotTime(30.0)
+smartSpectraView.setSpotTime(30.0)
 //whether to show fps in the previewDisplay
-smartSpectraButton.setShowFps(false)
+smartSpectraView.setShowFps(false)
 ```
 You can obtain an API key from PresageTech's developer portal (https://physiology.presagetech.com/)
 
@@ -83,59 +80,206 @@ You can obtain an API key from PresageTech's developer portal (https://physiolog
 
 ### Example Code
 
-Implement `SmartSpectraResultListener` in your MainActivity. Please refer to [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_example/MainActivity.kt) for example usage and plotting of a pulse and breathing pleth waveform. 
+To retrieve and use metrics, you can attach a `metricsBufferObserver` to get the metrics to process. Please refer to [MainActivity.kt](src/main/java/com/presagetech/smartspectra_example/MainActivity.kt) for example usage and plotting of different metrics such as pulse rate, breathing rates etc.
 
 ```kotlin
-private val resultListener: SmartSpectraResultListener = SmartSpectraResultListener { result ->
+import com.presage.physiology.proto.MetricsProto.MetricsBuffer
 
-        resultView.onResult(result) // pass the result to the view or handle it as needed
-
-        // example usage of pulse and breathing pleth data (if present) to plot the pleth charts
-        // see [MainActivity.kt](app/src/main/java/com/presagetech/smartspectra_example/MainActivity.kt)
-        if (result is ScreeningResult.Success) {
-            result.pulsePleth?.let {
-                addChart( it.map { Entry(it.time, it.value) }, "Pulse Pleth", false)
-            }
-            result.breathingPleth?.let {
-                addChart( it.map { Entry(it.time, it.value) }, "Breathing Pleth", false)
-            }
-        }
+override fun onCreate(savedInstanceState: Bundle?) {
+    //...
+    //...
+    smartSpectraView.setMetricsBufferObserver { metricsBuffer ->
+        // Process meshPoints here
+        handleMetricsBuffer(metricsBuffer)
     }
+    //...
+    //...
+}
+
+private fun handleMetricsBuffer(metrics: MetricsBuffer) {
+    // get the relevant metrics
+    val pulse = metrics.pulse
+    val breathing = metrics.breathing
+
+    // Plot the results
+
+    // Pulse plots
+    if (pulse.traceCount > 0) {
+        addChart(pulse.traceList.map { Entry(it.time, it.value) },  "Pulse Pleth", false)
+    }
+    // Breathing plots
+    if (breathing.upperTraceCount > 0) {
+        addChart(breathing.upperTraceList.map { Entry(it.time, it.value) }, "Breathing Pleth", false)
+    }
+    // TODO: See examples of plotting other metrics in MainActivity.kt
+}
+
 ```
 
-### Data Format
+For facemesh points, you can attach a `meshPointsObserver` to get the mesh points to process. To see an complete example of using scatter chart to visualize the mesh points, please refer to [MainActivity.kt](src/main/java/com/presagetech/smartspectra_example/MainActivity.kt). Reference to the index of the mesh points and their corresponding face landmarks can be seen [here](https://storage.googleapis.com/mediapipe-assets/documentation/mediapipe_face_landmark_fullsize.png)
 
-The resultsListener contains the following objects:
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    //...
+    //...
+    smartSpectraView.setMeshPointsObserver { meshPoints ->
+        // Process meshPoints here
+        handleMeshPoints(meshPoints)
+    }
+    //...
+    //...
+}
+private fun handleMeshPoints(meshPoints: List<Pair<Int, Int>>) {
+    Timber.d("Observed mesh points: ${meshPoints.size}")
+// TODO: Update UI or handle the points as needed. See examples of plotting in MainActivity.kt
+}
 
 
-| Result Key                   | Value Type                                 | Description                                                            |
-|------------------------------|--------------------------------------------|------------------------------------------------------------------------|
-| `result.strictPulseRate`     | (Double)                                   | The strict pulse rate (high confidence average over spot duration)     |
-| `result.strictBreathingRate` | (Double)                                   | The strict breathing rate (high confidence average over spot duration) |
-| `result.pulseValues`         | ArrayList<>(time (double), value (double)) | Pulse rates                                                            |
-| `result.pulseConfidence`     | ArrayList<>(time (double), value (double)) | Pulse rate confidences                                                 |
-| `result.pulsePleth`          | ArrayList<>(time (double), value (double)) | Pulse waveform or pleth                                                |
-| `result.hrv`                 | ArrayList<>(time (double), value (double)) | Pulse rate variability (RMSSD) **(Requires 60+ second Spot Duration)** |
-| `result.breathingValues`     | ArrayList<>(time (double), value (double)) | Breathing rates                                                        |
-| `result.breathingPleth`      | ArrayList<>(time (double), value (double)) | Breathing movement waveform or pleth                                   |
-| `result.breathingAmplitude`  | ArrayList<>(time (double), value (double)) | Breathing rate confidences                                             |
-| `result.apnea`               | ArrayList<>(time (double), value (bool))   | Apnea detection                                                        |
-| `result.breathingBaseline`   | ArrayList<>(time (double), value (double)) | Breathing baseline                                                     |
-| `result.phasic`              | ArrayList<>(time (double), value (double)) | Phasic (ie changes in relative blood pressure)                         |
-| `result.rrl`                 | ArrayList<>(time (double), value (double)) | Respiratory line length                                                |
-| `result.ie`                  | ArrayList<>(time (double), value (double)) | The inhale exhale ratio                                                |
-| `result.upload_date`         | ZonedDateTime                              | upload date time                                                       |
-| `result.version`             | String                                     | the version of API used                                                |
-|                              |                                            |                                                                        |
+```
+
+### Detailed `MetricsBuffer` Class Descriptions
+
+> **TIP**
+> If you need to use the types directly, the `MetricsBuffer` and corresponding classes are under the `com.presage.physiology.proto.MetricsProto` namespace. You can import it from `MetricsProto.MetricsBuffer` for easier usage:
+> ```kotlin
+> import com.presage.physiology.proto.MetricsProto.MetricsBuffer
+> ```
+
+`MetricsBuffer` contains the following parent classes:
+
+```kotlin
+class MetricsBuffer {
+    var pulse: Pulse
+    var breathing: Breathing
+    var bloodPressure: BloodPressure
+    var face: Face
+    var metadata: Metadata
+}
+```
+
+### Measurement Types
+
+- **`Measurement` Class**: Represents a measurement with time and value:
+
+```kotlin
+class Measurement {
+    var time: Float
+    var value: Float
+    var stable: Boolean
+}
+```
+
+- **`MeasurementWithConfidence` Class**: Includes confidence with the measurement:
+
+```kotlin
+class MeasurementWithConfidence {
+    var time: Float
+    var value: Float
+    var stable: Boolean
+    var confidence: Float
+}
+```
+
+- **`DetectionStatus` Class**: Used for events like apnea or face detection (blinking/talking):
+
+```kotlin
+class DetectionStatus {
+    var time: Float
+    var detected: Boolean
+    var stable: Boolean
+}
+```
+
+#### Metric Types
+
+- **`Pulse` Class**: Contains pulse-related measurements, including rate, trace, and strict values:
+
+```kotlin
+class Pulse {
+    var rateList: List<MeasurementWithConfidence>
+    var traceList: List<Measurement>
+    var strict: Strict
+}
+```
+
+- **`Breathing` Class**: Handles breathing-related data with upper and lower traces, amplitude, apnea status, and other metrics:
+
+```kotlin
+class Breathing {
+    var rateList: List<MeasurementWithConfidence>
+    var upperTraceList: List<Measurement>
+    var lowerTraceList: List<Measurement>
+    var amplitudeList: List<Measurement>
+    var apneaList: List<DetectionStatus>
+    var respiratoryLineLengthList: List<Measurement>
+    var inhaleExhaleRatioList: List<Measurement>
+    var strict: Strict
+}
+```
+
+- **`BloodPressure` Class**: Handles blood pressure measurements:
+
+> [!CAUTION]
+> Currently not available publicly, currently returned results are a duplicate of pulse pleth
+
+```kotlin
+class BloodPressure {
+    var phasicList: List<MeasurementWithConfidence>
+}
+```
+
+- **`Face` Class**: Includes detection statuses for blinking and talking:
+
+```kotlin
+class Face {
+    var blinkingList: List<DetectionStatus>
+    var talkingList: List<DetectionStatus>
+}
+```
+
+- **`Metadata` Class**: Includes metadata information:
+
+```kotlin
+class Metadata {
+    var id: String
+    var uploadTimestamp: String
+    var apiVersion: String
+}
+```
+
+#### Encoding and Decoding Protobuf Messages
+
+To serialize `MetricsBuffer` into binary format:
+
+```kotlin
+try {
+    val data: ByteArray = metricsBuffer.toByteArray()
+    // Send `data` to your backend or save it
+} catch (e: Exception) {
+    Timber.e("Failed to serialize metrics: ${e.message}")
+}
+```
+
+To decode binary protobuf data into `MetricsBuffer`:
+
+```kotlin
+try {
+    val decodedMetrics = MetricsBuffer.parseFrom(data)
+    // Use `decodedMetrics` as needed
+} catch (e: Exception) {
+    Timber.e("Failed to decode metrics: ${e.message}")
+}
+```
 
 ## API Key
 
 You can obtain an API key from PresageTech's developer portal (https://physiology.presagetech.com/)
 
 ## Troubleshooting
- 
-For additional support, contact support@presagetech.com or submit a github issue (https://github.com/Presage-Security/SmartSpectra-Android-App/issues)
 
-[//]: # (## Known Bugs)
+For additional support, contact support@presagetech.com or [submit a github issue](https://github.com/Presage-Security/SmartSpectra-Android-App/issues)
 
+### Known Bugs
 
+[//]: # (- Currently, there are no known bugs. If you encounter an issue, please contact support or report it.)
+- Some newer phones are experiencing crash during screening

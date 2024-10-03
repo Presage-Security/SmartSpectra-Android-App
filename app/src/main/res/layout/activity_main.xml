@@ -7,27 +7,36 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.presagetech.smartspectra.SmartSpectraButton
-        android:id="@+id/btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="32dp" />
-
-    <com.presagetech.smartspectra.SmartSpectraResultView
-        android:id="@+id/result_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
         <LinearLayout
-            android:id="@+id/chart_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@android:color/white">
+
+            <com.presagetech.smartspectra.SmartSpectraView
+                android:id="@+id/smart_spectra_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white">
+            </LinearLayout>
+
+            <com.github.mikephil.charting.charts.ScatterChart
+                android:id="@+id/mesh_container"
+                android:layout_width="400dp"
+                android:layout_height="400dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
