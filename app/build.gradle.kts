@@ -17,7 +17,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -41,7 +41,7 @@ dependencies {
 
     implementation("com.jakewharton.timber:timber:5.0.1")
 
-    implementation("com.presagetech:smartspectra:1.0.14-SNAPSHOT")
+    implementation("com.presagetech:smartspectra:1.0.15-SNAPSHOT")
 
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

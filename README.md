@@ -24,7 +24,7 @@ To integrate the SmartSpectra SDK into your Android project, add the following d
 
 ```gradle
 dependencies {
-    implementation 'com.presagetech:smartspectra:1.0.13'
+    implementation("com.presagetech:smartspectra:1.0.15-SNAPSHOT")
 }
 ```
 While the sdk library is in development process it may be necessary to add `maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")`
@@ -281,5 +281,4 @@ For additional support, contact support@presagetech.com or [submit a github issu
 
 ### Known Bugs
 
-[//]: # (- Currently, there are no known bugs. If you encounter an issue, please contact support or report it.)
-- Some newer phones are experiencing crash during screening
+- Currently, there are no known bugs. If you encounter an issue, please contact support or report it.
