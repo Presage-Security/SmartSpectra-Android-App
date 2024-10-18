@@ -12,7 +12,7 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 4
-        versionName = "4.0"
+        versionName = "4.0.1"
     }
 
     buildTypes {
@@ -41,7 +41,7 @@ dependencies {
 
     implementation("com.jakewharton.timber:timber:5.0.1")
 
-    implementation("com.presagetech:smartspectra:1.0.15-SNAPSHOT")
+    implementation("com.presagetech:smartspectra:1.0.16-SNAPSHOT")
 
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
