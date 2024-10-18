@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         // Valid range for spot time is between 20.0 and 120.0
         smartSpectraView.setSpotTime(30.0)
         smartSpectraView.setShowFps(false)
+        //Recording delay defaults to 3 if not provided
+        smartSpectraView.setRecordingDelay(3)
 
         // Optional: Only need to set it if you want to access face mesh points
         smartSpectraView.setMeshPointsObserver{ meshPoints ->
